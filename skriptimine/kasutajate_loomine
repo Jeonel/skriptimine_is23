@@ -7,26 +7,26 @@ else
     kasutajate_fail=$1
     paroolide_fail=$2
 
-    if [ -f "$kasutajate_fail" -o -f "$paroolide_fail" ]; then
+    if [ ! -f "$kasutajate_fail" -o ! -f "$paroolide_fail" ]; then
         echo "Viga: Üks või mõlemad failid ei ole olemas!"
         exit 1
     fi
 
-    if [ -s "$kasutajate_fail" -o -s "$paroolide_fail" ]; then
+    if [ ! -s "$kasutajate_fail" -o ! -s "$paroolide_fail" ]; then
         echo "Viga: Üks või mõlemad failid on tühjad!"
         exit 1
     fi
-
-
+	 while IFS=while IFS= read -r rida <&3 && IFS= read -r parool <&4; do
+	 kasutajanimi=$(echo "$rida" | cut -f1 -d:)
+      	 sh lisa_kasutaja.sh "$kasutajanimi"
         echo "$kasutaja:$parool" | chpasswd
 
         if [ $? -eq 0 ]; then
             echo "Kasutaja $kasutaja on lisatud süsteemi parooliga $parool"
         else
             echo "Probleem kasutaja $kasutaja lisamisega süsteemi"
+
 	fi
     done 3< "$kasutajate_fail" 4< "$paroolide_fail"
+
 fi
-
-
-
