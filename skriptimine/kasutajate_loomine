@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+#
+#
 
 if [ $# -ne 2 ]; then
     echo "Kasutusjuhend: $0 kasutajate_fail paroolide_fail"
@@ -18,13 +20,13 @@ else
     fi
 	 while IFS=while IFS= read -r rida <&3 && IFS= read -r parool <&4; do
 	 kasutajanimi=$(echo "$rida" | cut -f1 -d:)
-      	 sh lisa_kasutaja.sh "$kasutajanimi"
-        echo "$kasutaja:$parool" | chpasswd
+	 sudo useradd $kasutajanimi -m -s /bin/bash/
+        echo "$kasutajanimi:$parool" | sudo chpasswd
 
         if [ $? -eq 0 ]; then
-            echo "Kasutaja $kasutaja on lisatud süsteemi parooliga $parool"
+            echo "Kasutaja $kasutajanimi on lisatud süsteemi parooliga $parool"
         else
-            echo "Probleem kasutaja $kasutaja lisamisega süsteemi"
+            echo "Probleem kasutaja $kasutajanimi lisamisega süsteemi"
 
 	fi
     done 3< "$kasutajate_fail" 4< "$paroolide_fail"
