@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+# Kasutajate eemaldamise skript
+# Käivitamiseks juurkasutaja õigustega või sudo kaudu
+# Käivitamine: ./eemalda_kasutajad.sh kasutaja1 kasutaja2 ...
+
+# Kontrolli, kas skript käivitati juurkasutaja õigustega
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Skripti käivitamiseks on vaja juurkasutaja õigusi."
+    exit 1
+fi
+
+# Kontrolli, kas on antud vähemalt üks kasutajanimi
+if [ "$#" -lt 1 ]; then
+    echo "Kasutamine: $0 kasutaja1 [kasutaja2 ...]"
+    exit 1
+fi
+
+# Eemalda kõik antud kasutajad
+for kasutaja in "$@"; do
+    userdel -r "$kasutaja"
+    if [ $? -eq 0 ]; then
+        echo "Kasutaja $kasutaja on eemaldatud."
+    else
+        echo "Probleem kasutaja $kasutaja eemaldamisega."
+    fi
+done
