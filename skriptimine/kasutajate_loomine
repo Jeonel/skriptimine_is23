@@ -7,12 +7,12 @@ else
     kasutajate_fail=$1
     paroolide_fail=$2
 
-    if [ ! -f "$kasutajate_fail" -o ! -f "$paroolide_fail" ]; then
+    if [ -f "$kasutajate_fail" -o -f "$paroolide_fail" ]; then
         echo "Viga: Üks või mõlemad failid ei ole olemas!"
         exit 1
     fi
 
-    if [ ! -s "$kasutajate_fail" -o ! -s "$paroolide_fail" ]; then
+    if [ -s "$kasutajate_fail" -o -s "$paroolide_fail" ]; then
         echo "Viga: Üks või mõlemad failid on tühjad!"
         exit 1
     fi
@@ -22,10 +22,10 @@ else
 
         if [ $? -eq 0 ]; then
             echo "Kasutaja $kasutaja on lisatud süsteemi parooliga $parool"
-          done
         else
             echo "Probleem kasutaja $kasutaja lisamisega süsteemi"
-        fi
+	fi
+    done 3< "$kasutajate_fail" 4< "$paroolide_fail"
 fi
 
 
