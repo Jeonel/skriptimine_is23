@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+
+PWGEN=$(which pwgen)
+
+# Kontrolli, kas pwgen on süsteemis installitud
+if [ -z "$PWGEN" ]; then
+    echo "Viga: pwgen ei ole süsteemis installitud. Paigaldage see enne skripti käivitamist."
+    exit 1
+fi
+
+if [ $# -ne 1 ]; then
+    echo "Kasutusjuhend: $0 kasutajate_fail"
+else
+    kasutajate_fail=$1
+    logifail="loodud_kasutajad_paroolidega"
+
+    if [ ! -f "$kasutajate_fail" ]; then
+        echo "Viga: Kasutajate fail ei ole olemas!"
+        exit 1
+    fi
+
+    touch "$logifail"
+
+    while IFS= read -r kasutaja; do
+        parool=$($PWGEN -1 8)  # Genereeri juhuslik 8-märgiline parool
+
+        sudo useradd "$kasutaja" -m -s /bin/bash
+
+        if [ $? -eq 0 ]; then
+            echo "Kasutaja $kasutaja on lisatud süsteemi parooliga $parool"
+            echo "$kasutaja:$parool" >> "$logifail"
+            echo "$kasutaja:$parool"
+        else
+            echo "Viga: Probleem kasutaja $kasutaja lisamisega süsteemi"
+        fi
+    done < "$kasutajate_fail"
+fi
